@@ -21,7 +21,8 @@ export default class App extends Component {
         this.state = {
             dataBanner : [],
             dataCategories : [],
-            selectCatg : 0
+            selectCatg : 0,
+            dataFood : []
         };
     }
 
@@ -32,7 +33,8 @@ export default class App extends Component {
           this.setState({
               isLoading : false,
               dataBanner : resJson.banner,
-              dataCategories : resJson.categories
+              dataCategories : resJson.categories,
+              dataFood : resJson.food
           })
       })
       .catch(err => {
@@ -51,6 +53,26 @@ export default class App extends Component {
                 <Text style={{fontWeight:'bold',fontSize:22}}>{item.name}</Text>
             </TouchableOpacity>
          )
+     }
+
+     _renderItemFood = (item) => {
+         let catg = this.state.selectCatg
+         if(catg == 0 || catg == item.categorie) {
+             return (
+                <TouchableOpacity style={styles.divFood}>
+                <Image
+                  style={styles.imageFood}
+                  resizeMode="contain"
+                  source={{uri:item.image}} />
+                  <View style={{height:((width/2)-20)-90, backgroundColor:'transparent', width:((width/2)-20)-10}} />
+                  <Text style={{fontWeight:'bold',fontSize:22,textAlign:'center'}}>
+                    {item.name}
+                  </Text>
+                  <Text>Descp Food and Details</Text>
+                  <Text style={{fontSize:20,color:"green"}}>${item.price}</Text>
+                </TouchableOpacity>
+             )
+         }
      }
 
 
@@ -79,6 +101,12 @@ export default class App extends Component {
                             renderItem={({ item }) => this._renderItem(item)}
                             keyExtractor = { (item,index) => index.toString() }
                             />
+                            <FlatList 
+                            data={this.state.dataFood}
+                            renderItem={({item})=> this._renderItemFood(item)}
+                            keyExtractor={(item,index) => index.toString()}
+                            numColumns={2}
+                            />
                             <View style={{height:20}} />
                         </View>
                 </View>
@@ -94,17 +122,37 @@ const styles = StyleSheet.create({
       width:width-40,
       borderRadius:10,
       marginHorizontal:20
-    }, 
+    },
     divCategorie:{
-        backgroundColor:'red',
-        margin:5, alignItems:'center',
-        borderRadius:10,
-        padding:10
-      },
-      titleCatg:{
-        fontSize:30,
-        fontWeight:'bold',
-        textAlign:'center',
-        marginBottom:10
-      } 
+      backgroundColor:'red',
+      margin:5, alignItems:'center',
+      borderRadius:10,
+      padding:10
+    },
+    titleCatg:{
+      fontSize:30,
+      fontWeight:'bold',
+      textAlign:'center',
+      marginBottom:10
+    },
+    imageFood:{
+      width:((width/2)-20)-10,
+      height:((width/2)-20)-30,
+      backgroundColor:'transparent',
+      position:'absolute',
+      top:-45
+    },
+    divFood:{
+      width:(width/2)-20,
+      padding:10,
+      borderRadius:10,
+      marginTop:55,
+      marginBottom:5,
+      marginLeft:10,
+      alignItems:'center',
+      elevation:8,
+      shadowOpacity:0.3,
+      shadowRadius:50,
+      backgroundColor:'white',
+    }
   });
